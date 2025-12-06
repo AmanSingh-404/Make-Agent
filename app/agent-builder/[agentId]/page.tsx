@@ -3,37 +3,19 @@ import React, { useState, useCallback } from 'react'
 import Header from '../_components/Header'
 import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, Background, MiniMap, Controls, Panel, useOnSelectionChange, OnSelectionChangeParams } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import StartNode from '../_customNodes/StartNode';
-import AgentNode from '../_customNodes/AgentNode';
+import { nodeTypes } from './nodeTypes';
 import AgentToolsPanel from '../_components/AgentToolsPanel';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { WorkflowContext } from '@/context/WorkflowContext';
-import { useEffect } from 'react';
-import { useConvex } from 'convex/react';
+import { useConvex, useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useParams } from 'next/navigation';
 import { Agent } from '@/types/AgentType';
-import { useMutation } from 'convex/react';
 import { Button } from '@/components/ui/button';
 import { Save } from 'lucide-react';
 import { toast } from 'sonner';
-import EndNode from '../_customNodes/EndNode';
-import IfElseNode from '../_customNodes/IfElseNode';
-import WhileNode from '../_customNodes/WhileNode';
-import UserApprovalNode from '../_customNodes/UserAoorovalNode';
-import ApiNode from '../_customNodes/ApiNode';
 import SettingPannel from '../_components/SettingPannel';
 import PublishCodeDailoag from './preview/_components/PublishCodeDailoag';
-
-const nodeTypes = {
-  StartNode: StartNode,
-  AgentNode: AgentNode,
-  EndNode: EndNode,
-  IfElseNode: IfElseNode,
-  WhileNode: WhileNode,
-  UserApprovalNode: UserApprovalNode,
-  ApiNode: ApiNode,
-};
 
 function AgentBuilder() {
   const [nodes, setNodes] = useState([]);

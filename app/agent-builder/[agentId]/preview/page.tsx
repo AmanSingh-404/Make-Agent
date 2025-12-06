@@ -7,10 +7,10 @@ import { api } from '@/convex/_generated/api';
 import { useParams } from 'next/navigation';
 import { Agent } from '@/types/AgentType';
 import { Background, MiniMap, Controls, ReactFlow } from '@xyflow/react';
-import { nodeTypes } from '../page';
+import { nodeTypes } from '../nodeTypes';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
-import { RefreshCcwIcon } from 'lucide-react';
+import { RefreshCcw } from 'lucide-react';
 import { useMutation } from 'convex/react';
 import { id } from 'date-fns/locale';
 import ChatUi from './_components/ChatUi';
@@ -177,7 +177,7 @@ function previewAgent() {
     setLoading(false);
   }
 
-  const OnPublish=()=>{
+  const OnPublish = () => {
     setOpenDialog(true);
   }
 
@@ -185,7 +185,7 @@ function previewAgent() {
 
   return (
     <div>
-      <Header agentDetail={agentDetail} previewHeader={true} OnPublish={OnPublish}/>
+      <Header agentDetail={agentDetail} previewHeader={true} OnPublish={OnPublish} />
       <div className='grid grid-cols-4'>
         <div className='col-span-3 p-5 bordered rounded-2xl m-5'>
           <h2 className='text-2xl font-bold'>Preview Agent</h2>
@@ -206,13 +206,13 @@ function previewAgent() {
         </div>
         <div className='col-span-1 border-l h-screen p-5 rounded-2xl'>
           <div className='flex justify-center items-center h-full'>
-            {!agentDetail?.agentToolConfig? <Button onClick={GenerateAgentToolConfig} disabled={loading}> <RefreshCcwIcon className={`${loading && 'animate-spin'}`}/>Reboot Agent</Button>: <ChatUi generateAgentToolConfig={GenerateAgentToolConfig} loading={loading} agentDetail={agentDetail} conversationId={conversationId}/>}
+            {!agentDetail?.agentToolConfig ? <Button onClick={GenerateAgentToolConfig} disabled={loading}> <RefreshCcw className={`${loading && 'animate-spin'}`} />Reboot Agent</Button> : <ChatUi generateAgentToolConfig={GenerateAgentToolConfig} loading={loading} agentDetail={agentDetail} conversationId={conversationId} />}
           </div>
-          
+
         </div>
       </div>
 
-      <PublishCodeDailoag openDialog={openDialog} setOpenDialog={setOpenDialog}/>
+      <PublishCodeDailoag openDialog={openDialog} setOpenDialog={setOpenDialog} />
     </div>
   )
 }
