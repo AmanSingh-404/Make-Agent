@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import {Josefin_Sans } from "next/font/google";
+import { Josefin_Sans } from "next/font/google";
 import "./globals.css";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import {
   ClerkProvider,
 } from '@clerk/nextjs'
 import Provider from "./provider";
+import { Toaster } from "@/components/ui/sonner";
 
 
 
@@ -27,17 +28,19 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-    <html lang="en">
-      <body
-      className={josefin.className}
-      >
-        <ConvexClientProvider>
-          <Provider>
-          {children}
-          </Provider>
+      <html lang="en">
+        <body
+          className={josefin.className}
+          suppressHydrationWarning
+        >
+          <ConvexClientProvider>
+            <Provider>
+              {children}
+              <Toaster />
+            </Provider>
           </ConvexClientProvider>
-      </body>
-    </html>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }

@@ -16,11 +16,11 @@ export const CreateNewUser = mutation({
         if (user?.length == 0) {
             const userData = {
                 name: args.name,
-                email: args?.email,
+                email: args.email,
                 token: 5000
             }
             const result = await ctx.db.insert('UserTable', userData);
-            return userData;
+            return result;
         }
 
         return user[0];

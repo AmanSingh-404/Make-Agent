@@ -27,22 +27,34 @@ function CreateAgentSection() {
     const [agentName, setAgentName] = useState<string>("");
     const router = useRouter();
     const [loader, setLoader] = useState(false);
-    const {UserDetail, setUserDetail} = useContext(UserDetailContext);
+    const { UserDetail, setUserDetail } = useContext(UserDetailContext);
 
     const CreateAgent = async () => {
         setLoader(true);
         const agentId = uuidv4();//Generate Unique agent id
-        const result = await CreateAgentMutation({
-            agentId: agentId,
-            name: agentName ?? '',
-            userId: UserDetail?.id
-        });
-        console.log("Agent Created:", result);
-        setOpenDialog(false);
-        setLoader(false);
 
-        //navigation to agent builder page
-        router.push('/agent-builder/' + agentId);
+        if (!UserDetail?._id) {
+            console.error("UserDetail or UserDetail._id is missing");
+            setLoader(false);
+            return;
+        }
+
+        try {
+            const result = await CreateAgentMutation({
+                agentId: agentId,
+                name: agentName ?? '',
+                userId: UserDetail._id
+            });
+            console.log("Agent Created:", result);
+            setOpenDialog(false);
+            setLoader(false);
+
+            //navigation to agent builder page
+            router.push('/agent-builder/' + agentId);
+        } catch (error) {
+            console.error("Error creating agent:", error);
+            setLoader(false);
+        }
     }
 
     return (
@@ -66,8 +78,8 @@ function CreateAgentSection() {
                             <Button variant={'ghost'}>Cancel</Button>
                         </DialogClose>
 
-                        <Button onClick={()=>CreateAgent() } disabled={loader}>
-                            {loader && <Loader2Icon className='animate-spin'/>}Create Agent</Button>
+                        <Button onClick={() => CreateAgent()} disabled={loader}>
+                            {loader && <Loader2Icon className='animate-spin' />}Create Agent</Button>
                     </DialogFooter>
                 </DialogContent>
 

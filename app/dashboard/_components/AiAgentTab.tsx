@@ -6,7 +6,7 @@ import MyAgents from './MyAgents'
 function AiAgentTab() {
     return (
         <div className='px-10 md:px-24 lg:px-32 mt-14'>
-            <Tabs defaultValue="myagent" className="w-[400px]">
+            <Tabs defaultValue="myagent" className="w-full">
                 <TabsList>
                     <TabsTrigger value="myagent">My Agents</TabsTrigger>
                     <TabsTrigger value="template">Templates</TabsTrigger>
