@@ -18,7 +18,8 @@ import { api } from '@/convex/_generated/api'
 import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from 'next/navigation'
 import { UserDetailContext } from '@/context/UserDeatailsContext'
-
+import { useAuth } from '@clerk/nextjs';
+import { toast } from 'sonner'
 
 function CreateAgentSection() {
 
@@ -28,8 +29,14 @@ function CreateAgentSection() {
     const router = useRouter();
     const [loader, setLoader] = useState(false);
     const { UserDetail, setUserDetail } = useContext(UserDetailContext);
+    const {has}=useAuth();
+    const isPaidUser = has&&has({ plan: 'unlimited_plan' })
 
     const CreateAgent = async () => {
+        if(!isPaidUser && UserDetail?.totalRemainingCreadit<=0){
+            toast.error("You have no remaining credit");
+            return;
+        }
         setLoader(true);
         const agentId = uuidv4();//Generate Unique agent id
 

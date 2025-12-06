@@ -47,20 +47,40 @@ From this flow, generate an agent instruction prompt and all agent tools with al
 
 export async function POST(request: NextRequest) {
 
-    const {jsonConfig} = await request.json();
+  const { jsonConfig } = await request.json();
 
-    const response = await openai.responses.create({
-        model:'gpt-4.1-mini',
-        input:JSON.stringify(jsonConfig)+PROMPT,
-    })
+  let response;
+  try {
+    response = await openai.chat.completions.create({
+      model: 'openai/gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a helpful AI assistant that generates agent configurations in JSON format.'
+        },
+        {
+          role: 'user',
+          content: JSON.stringify(jsonConfig) + PROMPT
+        }
+      ]
+    });
+  } catch (error: any) {
+    console.error("OpenRouter API Error:", error);
+    return NextResponse.json({ error: "OpenRouter API Error", details: error.message }, { status: 500 });
+  }
 
-    const outpotText = response.output_text;
-    let parsedJson;
-    try {
-        parsedJson = JSON.parse(outpotText.replace('```json', '').replace('```', ''));
-    } catch (error) {
-        return NextResponse.json({error:error});
-    }
-    
-    return NextResponse.json(parsedJson);
+  const outpotText = response.choices[0].message.content;
+
+  if (!outpotText) {
+    return NextResponse.json({ error: "No response from OpenAI" }, { status: 500 });
+  }
+
+  let parsedJson;
+  try {
+    parsedJson = JSON.parse(outpotText.replace('```json', '').replace('```', ''));
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to parse JSON response" }, { status: 500 });
+  }
+
+  return NextResponse.json(parsedJson);
 }

@@ -6,10 +6,11 @@ import Link from 'next/link'
 
 type Props = {
     agentDetail: Agent | undefined
-    previewHeader?: boolean
+    previewHeader?: boolean,
+    OnPublish: () => void
 }
 
-function Header({agentDetail, previewHeader = false}:Props) {
+function Header({agentDetail, previewHeader = false, OnPublish}:Props) {
   return (
     <div className='p-3 flex items-center justify-between'>
         <div className='flex items-center gap-2'>
@@ -20,7 +21,7 @@ function Header({agentDetail, previewHeader = false}:Props) {
             <Button variant={'outline'}><Code2 />Code</Button>
             {!previewHeader ? <Link href={`/agent-builder/${agentDetail?.agentId}/preview`}><Button><Play />Preview</Button ></Link>:<Link href={`/agent-builder/${agentDetail?.agentId}`}><Button variant={'outline'}><X />Close Preview</Button></Link>}
 
-            <Button>Publish</Button>
+            <Button onClick={OnPublish}>Publish</Button>
         </div>
     </div>
   )

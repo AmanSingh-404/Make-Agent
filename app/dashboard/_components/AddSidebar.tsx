@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Image from "next/image";
 import Link from "next/link";
 
@@ -20,6 +20,9 @@ import { DatabaseIcon, Headphones, LayoutDashboard, Wallet, User2Icon, Gem } fro
 import { UserDetailContext } from '@/context/UserDeatailsContext';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@clerk/nextjs';
+import { useConvex } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 // import { UserDetailsContext } from '@/context/UserDetailsContext';
 
 const MenuOptions = [
@@ -30,22 +33,22 @@ const MenuOptions = [
     },
     {
         title: 'AI Agents',
-        url: '#',
+        url: '/dashboard/my-agents',
         icon: Headphones
     },
     {
         title: 'Data',
-        url: '#',
+        url: '/dashboard/data',
         icon: DatabaseIcon
     },
     {
         title: 'Pricing',
-        url: '#',
+        url: '/dashboard/pricing',
         icon: Wallet
     },
     {
         title: 'Profile',
-        url: '#',
+        url: '/dashboard/profile',
         icon: User2Icon
     }
 ];
@@ -54,6 +57,28 @@ function AddSidebar() {
     const { open } = useSidebar();
     const { UserDetail, setUserDetail } = useContext(UserDetailContext);
     const path=usePathname();
+    const {has}=useAuth();
+    const [totalRemainingCreadit, setTotalRemainingCreadit] = useState(0);
+
+    const isPaidUser = has&&has({ plan: 'unlimited_plan' })
+
+    useEffect(()=>{
+        if(!isPaidUser && UserDetail?.id){
+            GetUserAgent();
+        }
+    },[UserDetail])
+
+    const convex = useConvex();
+    const GetUserAgent=async()=>{
+        const result = await convex.query(api.agent.GetUserAgents,{
+            userId:UserDetail?.id
+        });
+        setTotalRemainingCreadit(2 - Number(result?.length || 0));
+        setUserDetail({
+            ...UserDetail,
+            totalRemainingCreadit:2 - Number(result?.length || 0)
+        })
+    }
 
     return (
         <Sidebar collapsible="icon">
@@ -87,11 +112,13 @@ function AddSidebar() {
             </SidebarContent>
 
             <SidebarFooter className="mb-2">
-                <div className="flex gap-3 items-center">
-                    <Gem className="text-yellow-500" />
-                    {open && <h2>Remaining Credit: <span className='font-bold'>{UserDetail?.token ?? 0}</span> </h2>}
-                </div>
-                {open && <Button className='text-white'>Upgrade To Unlimited</Button>}{}
+                {isPaidUser && (
+                    <div className="flex gap-3 items-center">
+                        <Gem className="text-yellow-500" />
+                        {open && <h2>Remaining Credit: <span className='font-bold'>{totalRemainingCreadit}/2</span> </h2>}
+                    </div>
+                )}
+                {!isPaidUser && <Button className='text-white'>Upgrade To Unlimited</Button>}
             </SidebarFooter>
         </Sidebar>
     );
