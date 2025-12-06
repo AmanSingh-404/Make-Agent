@@ -23,8 +23,9 @@ import WhileNode from '../_customNodes/WhileNode';
 import UserApprovalNode from '../_customNodes/UserAoorovalNode';
 import ApiNode from '../_customNodes/ApiNode';
 import SettingPannel from '../_components/SettingPannel';
+import PublishCodeDailoag from './preview/_components/PublishCodeDailoag';
 
-export const nodeTypes = {
+const nodeTypes = {
   StartNode: StartNode,
   AgentNode: AgentNode,
   EndNode: EndNode,
@@ -43,6 +44,7 @@ function AgentBuilder() {
   const updateAgentDetail = useMutation(api.agent.UpdateAgentDetail);
   const convex = useConvex();
   const [agentDetail, setAgentDetail] = useState<Agent>();
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     GetAgentById();
@@ -106,17 +108,21 @@ function AgentBuilder() {
   );
 
 
-  const onNodeSelect = useCallback(({nodes,edges}:OnSelectionChangeParams)=>{
+  const onNodeSelect = useCallback(({ nodes, edges }: OnSelectionChangeParams) => {
     setSelectedNode(nodes[0]);
-  },[])
+  }, [])
+
+  const onPublish = () => {
+    setOpenDialog(true);
+  }
 
   useOnSelectionChange({
-    onChange:onNodeSelect
+    onChange: onNodeSelect
   })
 
   return (
     <div>
-      <Header agentDetail={agentDetail} />
+      <Header agentDetail={agentDetail} OnPublish={onPublish} />
       <div style={{ width: '100vw', height: '90vh' }}>
         <ReactFlow
           nodes={nodes}
@@ -142,6 +148,7 @@ function AgentBuilder() {
           </Panel>
         </ReactFlow>
       </div>
+      <PublishCodeDailoag openDialog={openDialog} setOpenDialog={setOpenDialog} />
     </div>
   )
 }
