@@ -25,7 +25,7 @@ import ApiNode from '../_customNodes/ApiNode';
 import SettingPannel from '../_components/SettingPannel';
 import PublishCodeDailoag from './preview/_components/PublishCodeDailoag';
 
-const nodeTypes = {
+export const nodeTypes = {
   StartNode: StartNode,
   AgentNode: AgentNode,
   EndNode: EndNode,
